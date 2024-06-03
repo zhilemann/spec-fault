@@ -18,6 +18,7 @@ uint64_t timestamp() {
 
 	return (uint64_t)hi << 32 | lo; }
 
+/* avoid my reads getting optimized out */
 void mem_read(uintptr_t* mem) {
 	register uintptr_t tmp;
 	asm volatile (
@@ -36,7 +37,9 @@ void cache_flush(void* mem) {
 
 /////////////////////////////////////////////////
 
-void spec_test(const uintptr_t* src, uintptr_t* dst) {
+/* if `mem` is invalid, then (I suppose)
+   `test` fails and `cmov*` are skipped */
+void spec_test(const void* mem, uintptr_t* test) {
 	register uintptr_t tmp1, tmp2;
 	asm volatile (
 		"prefetchnta (%2);"
@@ -49,7 +52,7 @@ void spec_test(const uintptr_t* src, uintptr_t* dst) {
 			"jmp 2f;", "%0", "%4")
 		
 		: "=&r"(tmp1), "=&r"(tmp2)
-		: "r"(src), "r"(dst), "r"(JUNK)); }
+		: "r"(mem), "r"(test), "r"(JUNK)); }
 
 uint64_t uint64_min(uint64_t x, uint64_t y) {
 	return x < y ? x : y; }

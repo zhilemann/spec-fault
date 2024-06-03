@@ -95,6 +95,7 @@ const void* mem_regions_rand(const mem_regions* rgs) {
 
 	return rg->base + (random() % rg->len); }
 
+/* make sure the page is present in physical mem */
 void mem_init(const void* mem) {
 	register uintptr_t tmp;
 	asm volatile (
