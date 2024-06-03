@@ -1,5 +1,4 @@
-spec-pfault: core.c main.c
-	$(CC) -O2 $^ -o $@
+CC := $(CC) $(CFLAGS)
 
-spec-fetch: core.c spec-fetch.c
-	$(CC) -O2 $^ -o $@
+spec-pfault-demo: spec-pfault.c demo.c
+	$(CC) $^ -o $@
