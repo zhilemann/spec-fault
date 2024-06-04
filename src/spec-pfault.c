@@ -59,16 +59,19 @@ uint64_t uint64_min(uint64_t x, uint64_t y) {
 
 bool spec_pfault(const void* mem) {
 	uintptr_t* test = (uintptr_t*)TEST;
-	uint64_t reg = 0, spec = ~0;
+	uint64_t reg = 0, spec0 = ~0, spec = 0;
 
-	cache_flush(TEST); mem_read(test);
-	reg = timed_read(test);
+	for (size_t i = 0; i < 8; i++) {
+		cache_flush(TEST); mem_read(test);
+		reg += timed_read(test);
 
-	for (size_t j = 0; j < 8; j++) {
-		cache_flush(TEST);
-		for (size_t k = 0; k < 8; k++)
-			spec_test(mem, test);
+		for (size_t j = 0; j < 8; j++) {
+			cache_flush(TEST);
+			for (size_t k = 0; k < 256; k++)
+				spec_test(mem, test);
 
-		spec = uint64_min(spec, timed_read(test)); }
+			spec0 = uint64_min(spec0, timed_read(test)); }
+		
+		spec += spec0; spec0 = ~0; }
 
-	return spec > 2 * reg; }
+	return spec > 3 * reg; }
