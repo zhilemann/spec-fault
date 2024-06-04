@@ -1,4 +1,4 @@
-// a anti-debug demo for cool GIFs
+// a "anti-debug" demo for cool GIFs
 
 #include "src/spec-pfault.h"
 

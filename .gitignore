@@ -1,3 +1,1 @@
-spec-pfault*
-!spec-pfault.c
-!spec-pfault.h
+*.exe

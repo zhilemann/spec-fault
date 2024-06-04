@@ -1,4 +1,4 @@
-// a little "fuzz" tester for `spec-pfault`
+// a little benchmark for `spec-pfault`
 
 #include "src/spec-pfault.h"
 
