@@ -14,6 +14,9 @@
 		blob test, _pad, junk;
 	} blobset;
 
+	typedef void (*spec_test_fn)(void* mem, blobset* blobset);
+	typedef struct { uint64_t reg, spec; } spec_stats;
+	
 	/* speculate & buy some time */
 	#define spec_call(asm, tmp, junk) \
 		"call 1f;" asm \

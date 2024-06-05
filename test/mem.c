@@ -36,7 +36,10 @@ mem_map mem_map_enum() {
 		VirtualQuery(head, &info, sizeof(info)) != 0;
 		head += info.RegionSize)
 	{
-		rg = mem_region_new(info.BaseAddress, info.RegionSize);
+		rg = mem_region_new(
+			info.BaseAddress,
+			info.RegionSize - sizeof(uintptr_t));
+
 		const bool prot =
 			(info.State & MEM_COMMIT) == 0 ||
 			info.Protect == 0 ||
@@ -46,7 +49,7 @@ mem_map mem_map_enum() {
 		if (prot) rgs = &map.prot;
 		else rgs = (info.Protect & READONLY)
 		    ? &map.ro : &map.rw;
-
+		
 		mem_regions_add(rgs, rg); }
 
 	return map; }
@@ -75,9 +78,8 @@ void* mem_regions_rand(const mem_regions* rgs) {
 	const mem_region* rg = rgs->root;
 
 	for (
-		size_t i = 0;
-		rg != NULL && i + rg->len < idx;
-		i += rg->len, rg = rg->next) {}
+		size_t i = 0; rg != NULL && i + rg->len < idx;
+		rg = rg->next, i = (uintptr_t)rg->base) {}
 
 	return rg->base + (random() % rg->len); }
 

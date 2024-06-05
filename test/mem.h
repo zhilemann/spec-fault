@@ -12,11 +12,9 @@ typedef struct {
 	mem_region *root, *head;
 	size_t len; } mem_regions;
 
-typedef struct {
-	mem_regions ro, rw, prot; } mem_map;
+typedef struct { mem_regions prot, ro, rw; } mem_map;
 
-mem_map mem_map_enum();
-void mem_rand_init();
+mem_map mem_map_enum(); void mem_rand_init();
 
 void* mem_regions_rand(const mem_regions* rgs);
 void mem_regions_free(mem_regions* rgs);
