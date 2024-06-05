@@ -1,19 +1,18 @@
-# `spec-pfault` - a syscall-free page-fault oracle
+# `spec-fault` - a syscall-free memory fault oracle
 
 ![a funny demo GIF](./.md/demo.gif)
 
 ## what is this?
 
-`spec-pfault` **"predicts" whether accessing said memory address will raise an exception** via [side-channel speculative execution][spectre-meltdown].
+`spec-fault` **"predicts" whether reading said memory will raise an exception** via [side-channel speculative execution][spectre-meltdown].
 
-the [demo](./demo.c) (shown above) uses `spec-pfault` to **detect memory breakpoints and protect critical memory from debuggers**.
+the [demo](./demo.c) (shown above) uses `spec-fault` to **detect memory breakpoints and protect critical memory from debuggers**.
 
 _you can find the in-depth explanations in the [write-up](./.md/WRITE-UP.md)_.
 
 ## disclaimer!
 
-while the GIF above does look _pretty cool_, this method,
-like any other timing-based technique, **is inherently not 100% accurate**.
+while the GIF above does look _pretty cool_, this method, like any other timing-based technique, **is inherently not 100% accurate**.
 
 moreover, while a memory breakpoint does cause a exception, **not every exception is due to a breakpoint**.
 

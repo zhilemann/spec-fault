@@ -1,9 +1,9 @@
-#if !defined(SPEC_PFAULT_H)
-#define SPEC_PFAULT_H
+#if !defined(SPEC_FAULT_H)
+#define SPEC_FAULT_H
 
 #include <stdbool.h>
 
-#if defined(SPEC_PFAULT_C)
+#if defined(SPEC_FAULT_C)
 	#include <stdint.h>
 
 	#define align_to(n) _Alignas(n)
@@ -34,6 +34,7 @@
 		"ret; 2:"
 #endif
 
-bool spec_pfault(const void* mem);
+bool spec_fault_read(const void* mem);
+bool spec_fault_write(void* mem);
 
 #endif

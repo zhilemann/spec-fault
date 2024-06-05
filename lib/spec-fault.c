@@ -1,5 +1,5 @@
-#define SPEC_PFAULT_C
-#include "spec-pfault.h"
+#define SPEC_FAULT_C
+#include "spec-fault.h"
 
 /////////////////////////////////////////////////
 
@@ -58,7 +58,7 @@ void spec_test(const void* mem, uintptr_t* test) {
 void uint64_min(uint64_t* x, uint64_t y) {
 	if (*x > y) *x = y; }
 
-void spec_pfault0(
+void spec_fault0(
     const void* mem, uintptr_t* test,
     uint64_t* reg, uint64_t* spec)
 {
@@ -74,13 +74,13 @@ void spec_pfault0(
 
 		uint64_min(spec, timed_read(test)); } }
 
-bool spec_pfault(const void* mem) {
+bool spec_fault(const void* mem) {
 	uintptr_t* test = (uintptr_t*)TEST;
 	uint64_t reg0 = ~0, reg = 0,
 	         spec0 = ~0, spec = 0;
 
 	for (size_t i = 0; i < 32; i++) {
-		spec_pfault0(mem, test, &reg0, &spec0);
+		spec_fault0(mem, test, &reg0, &spec0);
 		reg += reg0; spec += spec0;
 
 		if (i >= 8) {
