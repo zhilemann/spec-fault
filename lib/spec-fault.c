@@ -78,7 +78,7 @@ static bool spec_fault(spec_test_fn test_fn, void* mem) {
 
 /* if `mem` is invalid, then (I suppose)
    `test` fails and `cmov*` are skipped */
-void spec_read(void* mem, blobset* blobset) {
+static void spec_read(void* mem, blobset* blobset) {
 	register uintptr_t tmp1, tmp2;
 	asm volatile (
 		"prefetchnta (%2);"
@@ -94,7 +94,7 @@ void spec_read(void* mem, blobset* blobset) {
 		: "r"(mem), "r"(&blobset->test),
 		  "r"(&blobset->junk)); }
 
-void spec_write(void* mem, blobset* blobset) {
+static void spec_write(void* mem, blobset* blobset) {
 	register uintptr_t tmp1, tmp2;
 	asm volatile (
 		"prefetchnta (%2);"
