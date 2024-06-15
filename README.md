@@ -26,7 +26,7 @@ although the GIF above does look pretty cool:
 please bear these issues in mind when evaluating this project.
 
 ## credits
-- [@can1357][can1357]'s [`haruspex`][haruspex] - inspiration and the spec-exec trigger
+* [@can1357][can1357]'s [`haruspex`][haruspex] - inspiration and the spec-exec trigger
 
 [spectre-meltdown]: https://en.wikipedia.org/wiki/Transient_execution_CPU_vulnerability
 
